@@ -1,0 +1,39 @@
+New Wubloader Integration
+Write better build script with GULP (including minifying and packaging the Public folder)
+Authentication & Session Management
+"Night Mode" and cookie to support it.
+
+"Queue" page to show videos currently awaiting edits (and who claimed them)
+Separate queue for RDPs.
+After video submission, redirect to queue page.
+
+J/K/L as keyboard shortcuts to move forward/back by 5 seconds, and pause.
+
+Resizable playback window/other solutions for extremely long videos.
+
+Make "title too long warning" have a non-white background (eeeeh - but will work on visibility)
+
+
+Video Player itself:
+hls.js or video.js libraries to display Ekim's video stream.
+    https://www.npmjs.com/package/videojs-abloop
+    https://github.com/videojs/http-streaming
+    
+Use the Azure Media Player instead of my hacked-together one?
+    https://ampdemo.azureedge.net/azuremediaplayer.html
+    Other samples: https://amp.azure.net/libs/amp/latest/docs/samples.html
+    Plugins include things like thumbnails while seeking: https://amp.azure.net/libs/amp/latest/docs/PLUGINS.html
+    So if this will work with Ekim's HLS stream, I'd want to create a plugin for my trim bar.
+    Note their are different skins available, which change the controls layout - the "Sprite Tip" plugin demo looks to have the look I want.
+    Oooh, Timeline Markers plugin could be handy for the trim bar.
+    Or, use them to mark elements from the spreadsheet.
+
+    ->Looks like this may only work with an Azure backend, at least without some hacking... and is probably built around video.js anyways.
+        Well, it can do local .mp4 files.
+    
+    ...https://azuremediaclipper.azurewebsites.net/
+
+TODO:
+    Backend
+    Trim Seek Bar/Slider
+    Authentication

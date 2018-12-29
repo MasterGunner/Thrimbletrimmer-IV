@@ -1,0 +1,86 @@
+{
+  "name": "videojs-trimming-controls",
+  "version": "0.0.0",
+  "description": "Controls to clip a segment of media.",
+  "main": "dist/videojs-trimming-controls.cjs.js",
+  "module": "dist/videojs-trimming-controls.es.js",
+  "generator-videojs-plugin": {
+    "version": "7.5.0"
+  },
+  "browserslist": [
+    "defaults",
+    "ie 11"
+  ],
+  "scripts": {
+    "prebuild": "npm run clean",
+    "build": "npm-run-all -p build:*",
+    "build:js": "rollup -c scripts/rollup.config.js",
+    "build:css": "npm-run-all build:css:sass",
+    "build:css:sass": "node-sass src/plugin.scss dist/videojs-trimming-controls.css --output-style=compressed --linefeed=lf",
+    "clean": "shx rm -rf ./dist ./test/dist",
+    "postclean": "shx mkdir -p ./dist ./test/dist",
+    "lint": "vjsstandard",
+    "server": "karma start scripts/karma.conf.js --singleRun=false --auto-watch",
+    "start": "npm-run-all -p server watch",
+    "pretest": "npm-run-all lint build",
+    "test": "npm-run-all test:*",
+    "posttest": "shx cat test/dist/coverage/text.txt",
+    "test:unit": "karma start scripts/karma.conf.js",
+    "test:verify": "vjsverify --verbose",
+    "update-changelog": "conventional-changelog -p videojs -i CHANGELOG.md -s",
+    "preversion": "npm test",
+    "version": "is-prerelease || npm run update-changelog && git add CHANGELOG.md",
+    "watch": "npm-run-all -p watch:*",
+    "watch:js": "npm run build:js -- -w",
+    "prepublishOnly": "npm-run-all build test:verify"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "keywords": [
+    "videojs",
+    "videojs-plugin"
+  ],
+  "author": "MasterGunner <jimbob959@gmail.com>",
+  "license": "MIT",
+  "vjsstandard": {
+    "ignore": [
+      "dist",
+      "docs",
+      "test/dist"
+    ]
+  },
+  "files": [
+    "CONTRIBUTING.md",
+    "dist/",
+    "docs/",
+    "index.html",
+    "scripts/",
+    "src/",
+    "test/"
+  ],
+  "husky": {
+    "hooks": {}
+  },
+  "dependencies": {
+    "global": "^4.3.2",
+    "video.js": "^6 || ^7"
+  },
+  "devDependencies": {
+    "conventional-changelog-cli": "^2.0.1",
+    "conventional-changelog-videojs": "^3.0.0",
+    "karma": "^3.0.0",
+    "not-prerelease": "^1.0.1",
+    "npm-merge-driver-install": "^1.0.0",
+    "npm-run-all": "^4.1.5",
+    "node-sass": "4.5.3",
+    "rollup": "^0.67.1",
+    "shx": "^0.3.2",
+    "sinon": "^6.1.5",
+    "videojs-generate-karma-config": "~5.0.0",
+    "videojs-generate-rollup-config": "~2.3.0",
+    "videojs-generator-verify": "~1.2.0",
+    "videojs-standard": "^8.0.1"
+  }
+}

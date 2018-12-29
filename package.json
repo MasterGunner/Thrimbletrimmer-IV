@@ -1,0 +1,24 @@
+{
+  "name": "thrimbletrimmer-iv",
+  "version": "1.0.0",
+  "description": "Eustace W. Thrimbletrimmer the Fourth",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MasterGunner/Thrimbletrimmer-IVgit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MasterGunner/Thrimbletrimmer-IV/issues"
+  },
+  "homepage": "https://github.com/MasterGunner/Thrimbletrimmer-IV#readme",
+  "dependencies": {
+    "video.js": "^7.3.0",
+    "videojs-contrib-quality-levels": "^2.0.9",
+    "videojs-hls-quality-selector": "0.0.8"
+  },
+  "devDependencies": {}
+}
