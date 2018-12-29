@@ -1,6 +1,6 @@
 document.addEventListener('keypress', (event) => {
-    //Add shortcuts for 0-9 to jump to those points in the timeline.
-    if(event.target.nodeName == "BODY") {
+    //if(event.target.nodeName == "BODY") {
+    if(event.target.nodeName !== "INPUT" && event.target.nodeName !== "TEXTAREA") {
         switch(event.key) {
             case "j":
                 player.currentTime(player.currentTime()-5);
