@@ -3,13 +3,13 @@ document.addEventListener('keypress', (event) => {
     if(event.target.nodeName !== "INPUT" && event.target.nodeName !== "TEXTAREA") {
         switch(event.key) {
             case "j":
-                player.currentTime(player.currentTime()-5);
+                player.currentTime(player.currentTime()-10);
                 break;
             case "k":
                 player.paused() ? player.play():player.pause();
                 break;
             case "l":
-                player.currentTime(player.currentTime()+5);
+                player.currentTime(player.currentTime()+10);
                 break;
             case ",":
                 player.currentTime(player.currentTime()-0.1);
@@ -59,4 +59,19 @@ document.addEventListener('keypress', (event) => {
     // const keyName = event.key;
     // console.log('keypress event\n\n' + 'key: ' + keyName);
     // console.log(event.target.nodeName);
+});
+
+//Arrow keys only detected on keydown, keypress only works in "some" browsers
+document.addEventListener('keydown', (event) => {
+    if(event.target.nodeName !== "INPUT" && event.target.nodeName !== "TEXTAREA") {
+        switch(event.keyCode) {
+            case 37:
+                player.currentTime(player.currentTime()-5);
+                break;
+            case 39:
+                player.currentTime(player.currentTime()+5);
+                break;
+
+        }
+    }
 });
