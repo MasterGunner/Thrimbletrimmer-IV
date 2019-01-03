@@ -37,3 +37,8 @@ TODO:
     Backend
     Trim Seek Bar/Slider
     Authentication
+	
+	
+<SafeBot> MasterGunner: as noted in the readme, they expect the base directory (containing CHANNEL/QUALITY/HOUR/FILE.ts segments) mounted at /mnt, which you'd generally run like this: docker run -v /path/to/that/directory:/mnt IMAGE < From ekimekim on Mon, 31 Dec 2018 05:37:51 UTC (11 hours 56 minutes ago)
+<SafeBot> MasterGunner: you'd then need to find the ip of that docker image (google it), then you can hit the http api at <that ip>:8000 < From ekimekim on Mon, 31 Dec 2018 05:38:49 UTC (11 hours 55 minutes ago)
+<SafeBot> MasterGunner: for the downloader, it also expects the channel name as an arg, so you'd run it like this: docker run -v /path/to/base/dir:/mnt IMAGE CHANNEL < From ekimekim on Mon, 31 Dec 2018 05:40:09 UTC (11 hours 54 minutes ago)

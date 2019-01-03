@@ -1,11 +1,11 @@
-var input = {
-    id: '2549',
-    start: 10,
-    end: 591.926213,
-    title: 'Desert Bus Clip',
-    description: 'A clip from Desert Bus.',
-    source: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8'
-}
+// var input = {
+//     id: '2549',
+//     start: 10,
+//     end: 591.926213,
+//     title: 'Desert Bus Clip',
+//     description: 'A clip from Desert Bus.',
+//     source: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8'
+// }
 
 var player = null;
 setupPlayer(input.source, input.start, input.end);
@@ -58,15 +58,18 @@ thrimbletrimmerSubmit = function() {
         alert("End Time must be greater than Start Time");
         document.getElementById('SubmitButton').disabled = false;
     } else {
+        var discontinuities = mapDiscontinuities();
         var wubData = {
             id:input.id,
-            start:player.trimmingControls().options.startTrim,
-            end:player.trimmingControls().options.endTrim,
+            start:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.startTrim),
+            end:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.endTrim),
             title:document.getElementById("VideoTitle").value,
             description:document.getElementById("VideoDescription").value
         };
+        alert(JSON.stringify(wubData));
         console.log(wubData);
-        // var posting = $.post('/setVideo', wubData);
+        //var posting = $.post('/setVideo', wubData);
+        // var posting = $.get('https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z',''));
         // posting.done(function(data) {
         //     alert('Successfully submitted video.\r\n' + data);
         //     //window.close();
@@ -76,5 +79,46 @@ thrimbletrimmerSubmit = function() {
         //     console.log(wubData);
         //     document.getElementById('SubmitButton').disabled = false;
         // });
+        //$('#outputFile').attr({target: '_blank', href: 'https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z','') });
+        
+        //document.getElementById('outputFile').src = 'https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z','');
+
+        var cutStartTime = new Date();
+        var cutting = $.get('https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z','')+"&allow_holes=true&experimental=true");
+        cutting.done(function(data) {
+            var cutEndTime = new Date();
+            alert("Successfully Cut Video.\r\n Cutting Time: " + (cutEndTime-cutStartTime)/1000 + " seconds");
+        });
     }
-}
+};
+
+mapDiscontinuities = function() {
+    var playlist = player.vhs.playlists.master.playlists[0];
+    var discontinuities = playlist.discontinuityStarts.map(segmentIndex => { return {segmentIndex:segmentIndex, segmentTimestamp:playlist.segments[segmentIndex].dateTimeObject, playbackIndex:null}; });
+    //var lastDiscontinuity = Math.max(...playlist.discontinuityStarts);
+    var lastDiscontinuity = playlist.discontinuityStarts.slice(-1).pop(); //Assumes discontinuities are sorted in ascending order.
+
+    var durationMarker = 0;
+    for (var index = 0; index <= lastDiscontinuity; index++) { 
+        let segment = playlist.segments[index];
+        if(segment.discontinuity) {
+            discontinuities.find(discontinuity => discontinuity.segmentIndex == index).playbackIndex = durationMarker;
+        }
+        durationMarker += segment.duration;
+    }
+
+    return discontinuities;
+};
+
+getRealTimeForPlayerTime = function(discontinuities, playbackIndex) {
+    var streamStart = player.vhs.playlists.master.playlists[0].dateTimeObject;
+    
+    //Find last discontinuity before playbackIndex
+    var lastDiscontinuity = discontinuities.filter(discontinuity => discontinuity.playbackIndex < playbackIndex).slice(-1).pop();
+    if(lastDiscontinuity) {
+        streamStart = lastDiscontinuity.segmentTimestamp;
+        playbackIndex -= lastDiscontinuity.playbackIndex;
+    }
+    
+    return new Date(streamStart.getTime()+playbackIndex*1000).toISOString();
+};
