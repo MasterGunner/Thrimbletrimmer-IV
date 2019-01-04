@@ -18,7 +18,7 @@ function setupPlayer(source, startTrim, endTrim) {
         sources: [{ src: source }],
         //fluid:true,
         controls:true,
-        autoplay:true,
+        autoplay:false,
         width:1280,
         height:420,
         playbackRates: [0.5, 1, 1.25, 1.5, 2],
@@ -83,11 +83,18 @@ thrimbletrimmerSubmit = function() {
         
         //document.getElementById('outputFile').src = 'https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z','');
 
+        var targetURL = document.getElementById("WubloaderLocation").value + 
+            "/cut/" + document.getElementById("StreamName").value + 
+            "/source.ts?start=" + wubData.start.replace('Z','') + 
+            "&end=" + wubData.end.replace('Z','') + 
+            "&allow_holes=" + String(document.getElementById('AllowHoles').checked) +
+            "&experimental=" + String(document.getElementById('IsExperimental').checked);
+        console.log(targetURL);
         var cutStartTime = new Date();
-        var cutting = $.get('https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z','')+"&allow_holes=true&experimental=true");
+        var cutting = $.get(targetURL);
         cutting.done(function(data) {
             var cutEndTime = new Date();
-            alert("Successfully Cut Video.\r\n Cutting Time: " + (cutEndTime-cutStartTime)/1000 + " seconds");
+            alert("Successfully Cut Video.\r\n" + targetURL + "\r\nCutting Time: " + (cutEndTime-cutStartTime)/1000 + " seconds");
         });
     }
 };
