@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Thrimbletrimmer Goes Forth</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: 'AIzaSyD8mDO_Cs0GZ-0MT3AQbvAVWxU17hNg50g',
+            authDomain: 'thrimbletrimmer.firebaseapp.com',
+            projectId: 'thrimbletrimmer'
+        });
+
+        // Initialize Cloud Firestore through Firebase
+        var db = firebase.firestore();
+
+        // Disable deprecated features
+        db.settings({
+            timestampsInSnapshots: true
+        });
+    </script>
+
+    <style>
+        html, body {
+            height:100%;
+            margin:0px;
+            background-color:darkgrey;
+        }
+
+        .sectionContainer {
+            margin:24px auto;
+            padding:32px;
+            border-radius:4px;
+            background:white;
+            box-shadow:0 0 34px rgba(0,0,0,.26);
+            max-width:1280px;
+        }
+
+        #QueueTable {
+            width:100%; 
+            border-collapse: collapse;
+            text-align: center;
+        }
+        #QueueTable, #QueueTable th, #QueueTable td {
+            border: 1px solid black;
+        }
+        #QueueTable tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        #QueueTable tr:hover {
+            background-color:#dddddd;
+        }
+        #QueueTable th {
+            line-height:32px;
+        }
+    </style>
+</head>
+<body>
+    <div style="width:1280px;margin:auto;">
+        <div class="sectionContainer">
+            <table>
+                <tr>
+                    <th>Wubloader URL</th>
+                    <th>Stream</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Allow Holes</th>
+                    <th>Experimental</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td><input id="WubloaderLocation" value="https://wubloader.codegunner.com" /></td>
+                    <td><input id="StreamName" value="Seabats" /></td>
+                    <td><input id="StreamStart" value="2019-01-01T17:00:00" /></td>
+                    <td><input id="StreamEnd" value="2019-01-01T18:00:00" /></td>
+                    <td><input id="AllowHoles" type="checkbox" checked /></td>
+                    <td><input id="IsExperimental" type="checkbox" checked /></td>
+                    <td><input type="button" value="Load Playlist" onclick="loadPlaylist()" /></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:alert('https://wubloader.codegunner.com');">Wubloaders</a></td>
+                    <td><a href="javascript:alert('seabats, lunarjade');">Streams</a></td>
+                    <td><a href="javascript:window.open(document.getElementById('WubloaderLocation').value + '/files/' + document.getElementById('StreamName').value + '/source', '_blank');">Hours</a></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="sectionContainer">
+            <h1 style="color:#1976d2;font-size:34px;line-height:38px;">Wubloader Queue</h1>
+            <table id="QueueTable">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Cut URL</th>
+                    <th>Submitted</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        db.collection("Wubloader-Queue").orderBy("submittedTimestamp").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var row = document.createElement("TR");
+                row.innerHTML = `
+                    <td>${doc.data().id}</td>
+                    <td>${doc.data().title}</td>
+                    <td>${doc.data().description}</td>
+                    <td>${doc.data().start}</td>
+                    <td>${doc.data().end}</td>
+                    <td><a href="${doc.data().cutURL}">Download</a></td>
+                    <td>${doc.data().submittedTimestamp}</td>
+                `;
+                document.getElementById('QueueTable').appendChild(row);
+            });
+        });
+
+        function loadPlaylist() {
+            sessionStorage.setItem('wubloaderURL', document.getElementById("WubloaderLocation").value);
+            sessionStorage.setItem('streamName', document.getElementById("StreamName").value);
+            sessionStorage.setItem('streamStart', document.getElementById("StreamStart").value);
+            sessionStorage.setItem('streamEnd', document.getElementById("StreamEnd").value);
+            sessionStorage.setItem('allowHoles', document.getElementById('AllowHoles').checked);
+            sessionStorage.setItem('isExperimental', document.getElementById('IsExperimental').checked);
+
+            window.document.location.href = "/";
+        }
+    </script>
+</body>
+</html>

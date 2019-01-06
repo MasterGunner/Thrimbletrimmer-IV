@@ -18,10 +18,29 @@
     <script src="/plugins/videojs-hls-quality-selector/dist/videojs-hls-quality-selector.min.js"></script>
     <script src="/videojs-trimming-controls/dist/videojs-trimming-controls.js"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: 'AIzaSyD8mDO_Cs0GZ-0MT3AQbvAVWxU17hNg50g',
+            authDomain: 'thrimbletrimmer.firebaseapp.com',
+            projectId: 'thrimbletrimmer'
+        });
+
+        // Initialize Cloud Firestore through Firebase
+        var db = firebase.firestore();
+
+        // Disable deprecated features
+        db.settings({
+            timestampsInSnapshots: true
+        });
+    </script>
+
     <style>
         html, body {
             height:100%;
             margin:0px;
+            background-color:darkgrey;
         }
         .video-js .vjs-control-bar {
             background-color:#2b333f;
@@ -52,77 +71,65 @@
     </style>
 </head>
 <body>
-    <div style="width:100%;height:100%;padding-top:25px;background-color:darkgrey;">
-        <!-- <div>
-            <input id="SetPlaylist" value="https://wubloader.codegunner.com/playlist/seabats.m3u8" />
-            <input id="StreamStart" value="2019-01-01T17:00:00" />
-            <input id="StreamEnd" value="2019-01-01T18:00:00" />
-            <input type="button" value="Load Playlist" onclick="loadPlaylist()" />
-            <ul>
-                <li>https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8 <a href="https://wubloader.codegunner.com/files/seabats/source">/files/seabats/source</a></li>
-                <li>https://wubloader.codegunner.com/playlist/lunarjade.m3u8</li>
-                <li>https://wubloader.codegunner.com/playlist/seabats.m3u8</li>
-            </ul>
-        </div> -->
-        <div style="width:1280px;margin:auto;">
-            <table>
-                <tr>
-                    <th>Wubloader URL</th>
-                    <th>Stream</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Allow Holes</th>
-                    <th>Experimental</th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <td><input id="WubloaderLocation" value="https://wubloader.codegunner.com" /></td>
-                    <td><input id="StreamName" value="Seabats" /></td>
-                    <td><input id="StreamStart" value="2019-01-01T17:00:00" /></td>
-                    <td><input id="StreamEnd" value="2019-01-01T18:00:00" /></td>
-                    <td><input id="AllowHoles" type="checkbox" checked /></td>
-                    <td><input id="IsExperimental" type="checkbox" checked /></td>
-                    <td><input type="button" value="Load Playlist" onclick="loadPlaylist()" /></td>
-                </tr>
-                <tr>
-                    <td><a href="javascript:alert('https://wubloader.codegunner.com');">Wubloaders</a></td>
-                    <td><a href="javascript:alert('seabats, lunarjade');">Streams</a></td>
-                    <td><a href="javascript:window.open(document.getElementById('WubloaderLocation').value + '/files/' + document.getElementById('StreamName').value + '/source', '_blank');">Hours</a></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
+    <div style="width:1280px;margin:auto;padding-top:25px;">
+        <table>
+            <tr>
+                <th>Wubloader URL</th>
+                <th>Stream</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Allow Holes</th>
+                <th>Experimental</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td><input id="WubloaderLocation" value="https://wubloader.codegunner.com" /></td>
+                <td><input id="StreamName" value="Seabats" /></td>
+                <td><input id="StreamStart" value="2019-01-01T17:00:00" /></td>
+                <td><input id="StreamEnd" value="2019-01-01T18:00:00" /></td>
+                <td><input id="AllowHoles" type="checkbox" checked /></td>
+                <td><input id="IsExperimental" type="checkbox" checked /></td>
+                <td><input type="button" value="Load Playlist" onclick="loadPlaylist()" /></td>
+            </tr>
+            <tr>
+                <td><a href="javascript:alert('https://wubloader.codegunner.com');">Wubloaders</a></td>
+                <td><a href="javascript:alert('seabats, lunarjade');">Streams</a></td>
+                <td><a href="javascript:window.open(document.getElementById('WubloaderLocation').value + '/files/' + document.getElementById('StreamName').value + '/source', '_blank');">Hours</a></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
 
-            <video id="my-player" class="video-js" controls preload="auto">
-                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-            </video>
+        <video id="my-player" class="video-js" controls preload="auto">
+            <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+        </video>
 
-            <div id="EditorDetailsPane">
-                <div>
-                    Title: <br />
-                    <input type="text" id="VideoTitle" value="" maxlength="91" />
-                </div>
-                <div>
-                    Description:<br/>
-                    <textarea id="VideoDescription" ></textarea>
-                </div>
-                <input type="button" id="SubmitButton" value="Submit" onclick="thrimbletrimmerSubmit()"/>
-                <a id="HelpButton" style="float:right;" href="JavaScript:toggleHelp();">Help</a>
+        <div id="EditorDetailsPane">
+            <div>
+                Title: <br />
+                <input type="text" id="VideoTitle" value="" maxlength="91" />
             </div>
-            <div id="HelpPane" style="display:none;">
-                <ul>
-                    <li>J/K/L - Back 10 seconds, Play/Pause, Advance 10 seconds</li>
-                    <li>LeftArrow/RightArrow - Back 5 seconds, Advance 5 seconds</li>
-                    <li>,/. - Back 0.1 seconds, Advance 0.1 seconds</li>
-                    <li>I/O - Set start of trim at playhead, set end of trim at playhead</li>
-                    <li>0-9 - Jump to 0% - 90% through the video.</li>
-                </ul>
+            <div>
+                Description:<br/>
+                <textarea id="VideoDescription" ></textarea>
             </div>
+            <input type="button" id="SubmitButton" value="Submit" onclick="thrimbletrimmerSubmit()"/>
+            <a href="/dashboard.html">Go To Dashboard</a>
+            <a id="HelpButton" style="float:right;" href="JavaScript:toggleHelp();">Help</a>
         </div>
-        <iframe id="outputFile" style="display:none;"></iframe>
+        <div id="HelpPane" style="display:none;">
+            <ul>
+                <li>J/K/L - Back 10 seconds, Play/Pause, Advance 10 seconds</li>
+                <li>LeftArrow/RightArrow - Back 5 seconds, Advance 5 seconds</li>
+                <li>,/. - Back 0.1 seconds, Advance 0.1 seconds</li>
+                <li>I/O - Set start of trim at playhead, set end of trim at playhead</li>
+                <li>0-9 - Jump to 0% - 90% through the video.</li>
+            </ul>
+        </div>
     </div>
+    <iframe id="outputFile" style="display:none;"></iframe>
     <script>
         var input = {
             id: '2549',
@@ -149,7 +156,17 @@
             var helpPane = document.getElementById("HelpPane");
             helpPane.style.display = (helpPane.style.display === "none") ? "block":"none";
         }
+
+        if(!!sessionStorage.length){
+            document.getElementById("WubloaderLocation").value = sessionStorage.getItem('wubloaderURL');
+            document.getElementById("StreamName").value = sessionStorage.getItem('streamName');
+            document.getElementById("StreamStart").value = sessionStorage.getItem('streamStart');
+            document.getElementById("StreamEnd").value = sessionStorage.getItem('streamEnd');
+            document.getElementById('AllowHoles').checked = (sessionStorage.getItem('allowHoles') === "true");
+            document.getElementById('IsExperimental').checked = (sessionStorage.getItem('isExperimental') === "true");
+
+            loadPlaylist();
+        }
     </script>
 </body>
 </html>
-;

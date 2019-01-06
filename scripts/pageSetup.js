@@ -18,7 +18,7 @@ function setupPlayer(source, startTrim, endTrim) {
         sources: [{ src: source }],
         //fluid:true,
         controls:true,
-        autoplay:false,
+        autoplay:true,
         width:1280,
         height:420,
         playbackRates: [0.5, 1, 1.25, 1.5, 2],
@@ -59,15 +59,15 @@ thrimbletrimmerSubmit = function() {
         document.getElementById('SubmitButton').disabled = false;
     } else {
         var discontinuities = mapDiscontinuities();
-        var wubData = {
-            id:input.id,
-            start:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.startTrim),
-            end:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.endTrim),
-            title:document.getElementById("VideoTitle").value,
-            description:document.getElementById("VideoDescription").value
-        };
-        alert(JSON.stringify(wubData));
-        console.log(wubData);
+        // var wubData = {
+        //     id:input.id,
+        //     start:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.startTrim),
+        //     end:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.endTrim),
+        //     title:document.getElementById("VideoTitle").value,
+        //     description:document.getElementById("VideoDescription").value
+        // };
+        // alert(JSON.stringify(wubData));
+        // console.log(wubData);
         //var posting = $.post('/setVideo', wubData);
         // var posting = $.get('https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z',''));
         // posting.done(function(data) {
@@ -83,18 +83,46 @@ thrimbletrimmerSubmit = function() {
         
         //document.getElementById('outputFile').src = 'https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z','');
 
-        var targetURL = document.getElementById("WubloaderLocation").value + 
+        // var targetURL = document.getElementById("WubloaderLocation").value + 
+        //     "/cut/" + document.getElementById("StreamName").value + 
+        //     "/source.ts?start=" + wubData.start.replace('Z','') + 
+        //     "&end=" + wubData.end.replace('Z','') + 
+        //     "&allow_holes=" + String(document.getElementById('AllowHoles').checked) +
+        //     "&experimental=" + String(document.getElementById('IsExperimental').checked);
+        // console.log(targetURL);
+        // document.getElementById('outputFile').src = targetURL;
+
+        // var cutStartTime = new Date();
+        // var cutting = $.get(targetURL);
+        // cutting.done(function(data) {
+        //     var cutEndTime = new Date();
+        //     alert("Successfully Cut Video.\r\n" + targetURL + "\r\nCutting Time: " + (cutEndTime-cutStartTime)/1000 + " seconds");
+        // });
+
+        var wubData = {
+            id:input.id,
+            start:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.startTrim),
+            end:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.endTrim),
+            title:document.getElementById("VideoTitle").value,
+            description:document.getElementById("VideoDescription").value,
+            submittedTimestamp:(new Date()).toISOString()
+        };
+        wubData.cutURL = document.getElementById("WubloaderLocation").value + 
             "/cut/" + document.getElementById("StreamName").value + 
             "/source.ts?start=" + wubData.start.replace('Z','') + 
             "&end=" + wubData.end.replace('Z','') + 
             "&allow_holes=" + String(document.getElementById('AllowHoles').checked) +
             "&experimental=" + String(document.getElementById('IsExperimental').checked);
-        console.log(targetURL);
-        var cutStartTime = new Date();
-        var cutting = $.get(targetURL);
-        cutting.done(function(data) {
-            var cutEndTime = new Date();
-            alert("Successfully Cut Video.\r\n" + targetURL + "\r\nCutting Time: " + (cutEndTime-cutStartTime)/1000 + " seconds");
+        console.log(wubData);
+        db.collection("Wubloader-Queue").add(wubData)
+        .then(function(docRef) {
+            alert('Successfully submitted video.\r\n' + wubData.cutURL);
+            console.log("Document written with ID: ", docRef.id);
+        })
+        .catch(function(error) {
+            alert('Failed to submit video.');
+            console.error("Error adding document: ", error);
+            document.getElementById('SubmitButton').disabled = false;
         });
     }
 };
