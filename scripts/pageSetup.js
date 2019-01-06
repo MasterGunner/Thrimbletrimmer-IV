@@ -128,7 +128,7 @@ thrimbletrimmerSubmit = function() {
 };
 
 mapDiscontinuities = function() {
-    var playlist = player.vhs.playlists.master.playlists[0];
+    var playlist = player.vhs.playlists.master.playlists.filter(playlist => playlist.attributes.VIDEO === "source")[0]; //Make sure to grab the source playlists, non-source appears to lack the discontinuity and stream start objects.
     var discontinuities = playlist.discontinuityStarts.map(segmentIndex => { return {segmentIndex:segmentIndex, segmentTimestamp:playlist.segments[segmentIndex].dateTimeObject, playbackIndex:null}; });
     //var lastDiscontinuity = Math.max(...playlist.discontinuityStarts);
     var lastDiscontinuity = playlist.discontinuityStarts.slice(-1).pop(); //Assumes discontinuities are sorted in ascending order.
@@ -146,7 +146,7 @@ mapDiscontinuities = function() {
 };
 
 getRealTimeForPlayerTime = function(discontinuities, playbackIndex) {
-    var streamStart = player.vhs.playlists.master.playlists[0].dateTimeObject;
+    var streamStart = player.vhs.playlists.master.playlists.filter(playlist => playlist.attributes.VIDEO === "source")[0].dateTimeObject; //Make sure to grab the source playlists, non-source appears to lack the discontinuity and stream start objects.
     
     //Find last discontinuity before playbackIndex
     var lastDiscontinuity = discontinuities.filter(discontinuity => discontinuity.playbackIndex < playbackIndex).slice(-1).pop();

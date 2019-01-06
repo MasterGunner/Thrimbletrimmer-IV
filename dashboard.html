@@ -51,7 +51,7 @@
             text-align: center;
         }
         #QueueTable, #QueueTable th, #QueueTable td {
-            border: 1px solid black;
+            border: 1px solid #cccccc;
         }
         #QueueTable tr:nth-child(even) {
             background-color: #f2f2f2;
@@ -65,7 +65,7 @@
     </style>
 </head>
 <body>
-    <div style="width:1280px;margin:auto;">
+    <div>
         <div class="sectionContainer">
             <table>
                 <tr>
@@ -79,16 +79,16 @@
                 </tr>
                 <tr>
                     <td><input id="WubloaderLocation" value="https://wubloader.codegunner.com" /></td>
-                    <td><input id="StreamName" value="Seabats" /></td>
-                    <td><input id="StreamStart" value="2019-01-01T17:00:00" /></td>
-                    <td><input id="StreamEnd" value="2019-01-01T18:00:00" /></td>
+                    <td><input id="StreamName" value="gamesdonequick" /></td>
+                    <td><input id="StreamStart" value="2019-01-06T16:00:00" /></td>
+                    <td><input id="StreamEnd" value="2019-01-06T17:00:00" /></td>
                     <td><input id="AllowHoles" type="checkbox" checked /></td>
                     <td><input id="IsExperimental" type="checkbox" checked /></td>
                     <td><input type="button" value="Load Playlist" onclick="loadPlaylist()" /></td>
                 </tr>
                 <tr>
                     <td><a href="javascript:alert('https://wubloader.codegunner.com');">Wubloaders</a></td>
-                    <td><a href="javascript:alert('seabats, lunarjade');">Streams</a></td>
+                    <td><a href="javascript:alert('seabats, lunarjade, gamesdonequick');">Streams</a></td>
                     <td><a href="javascript:window.open(document.getElementById('WubloaderLocation').value + '/files/' + document.getElementById('StreamName').value + '/source', '_blank');">Hours</a></td>
                     <td></td>
                     <td></td>
