@@ -12,7 +12,7 @@ $MOUNT_PATH = "/mnt"
 az container create `
     --resource-group $ACI_PERS_RESOURCE_GROUP `
     --name "wubloader-downloader-gdq" `
-    --image "quay.io/ekimekim/wubloader-downloader:446befd" `
+    --image "quay.io/ekimekim/wubloader-downloader:latest" `
     --dns-name-label "wub-down-demo-2" `
     --ports 80 8001 `
     --location $LOCATION `
@@ -20,7 +20,7 @@ az container create `
     --azure-file-volume-account-key $STORAGE_KEY `
     --azure-file-volume-share-name $ACI_PERS_SHARE_NAME `
     --azure-file-volume-mount-path $MOUNT_PATH `
-    --command-line "python2 -m downloader --base-dir /mnt gamesdonequick --qualities 480p"
+    --command-line "python2 -m downloader --base-dir /mnt gamesdonequick --qualities source,480p"
 
 az container show --resource-group $ACI_PERS_RESOURCE_GROUP --name "wubloader-downloader-gdq" --query ipAddress.fqdn
 
@@ -28,7 +28,7 @@ az container show --resource-group $ACI_PERS_RESOURCE_GROUP --name "wubloader-do
 az container create `
     --resource-group $ACI_PERS_RESOURCE_GROUP `
     --name "wubloader-backfiller-gdq" `
-    --image "quay.io/ekimekim/wubloader-backfiller:446befd" `
+    --image "quay.io/ekimekim/wubloader-backfiller:latest" `
     --dns-name-label "wub-backfill-demo" `
     --ports 80 8002 `
     --location $LOCATION `
@@ -45,7 +45,7 @@ az container show --resource-group $ACI_PERS_RESOURCE_GROUP --name "wubloader-ba
 az container create `
     --resource-group $ACI_PERS_RESOURCE_GROUP `
     --name "wubloader-restreamer" `
-    --image "quay.io/ekimekim/wubloader-restreamer:446befd" `
+    --image "quay.io/ekimekim/wubloader-restreamer:latest" `
     --dns-name-label "wub-restream-demo" `
     --ports 80 `
     --location $LOCATION `

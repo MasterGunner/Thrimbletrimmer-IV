@@ -38,7 +38,7 @@ function setupPlayer(source, startTrim, endTrim) {
             //this.play();
         });
 
-        this.tech({ IWillNotUseThisInPlugins: true }).hls.playlists.on('loadedmetadata', function() {
+        this.vhs.playlists.on('loadedmetadata', function() {
             // setTimeout(function() { player.play(); }, 1000);
             player.hasStarted(true); //So it displays all the controls.
         });
@@ -59,30 +59,6 @@ thrimbletrimmerSubmit = function() {
         document.getElementById('SubmitButton').disabled = false;
     } else {
         var discontinuities = mapDiscontinuities();
-        // var wubData = {
-        //     id:input.id,
-        //     start:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.startTrim),
-        //     end:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.endTrim),
-        //     title:document.getElementById("VideoTitle").value,
-        //     description:document.getElementById("VideoDescription").value
-        // };
-        // alert(JSON.stringify(wubData));
-        // console.log(wubData);
-        //var posting = $.post('/setVideo', wubData);
-        // var posting = $.get('https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z',''));
-        // posting.done(function(data) {
-        //     alert('Successfully submitted video.\r\n' + data);
-        //     //window.close();
-        // });
-        // posting.fail(function(data) {
-        //     alert('Failed to submit video.\r\n' + data.status+' - '+data.responseText);
-        //     console.log(wubData);
-        //     document.getElementById('SubmitButton').disabled = false;
-        // });
-        //$('#outputFile').attr({target: '_blank', href: 'https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z','') });
-        
-        //document.getElementById('outputFile').src = 'https://wubloader.codegunner.com/cut/seabats/source.ts?start='+wubData.start.replace('Z','')+'&end='+wubData.end.replace('Z','');
-
         // var targetURL = document.getElementById("WubloaderLocation").value + 
         //     "/cut/" + document.getElementById("StreamName").value + 
         //     "/source.ts?start=" + wubData.start.replace('Z','') + 
@@ -91,13 +67,6 @@ thrimbletrimmerSubmit = function() {
         //     "&experimental=" + String(document.getElementById('IsExperimental').checked);
         // console.log(targetURL);
         // document.getElementById('outputFile').src = targetURL;
-
-        // var cutStartTime = new Date();
-        // var cutting = $.get(targetURL);
-        // cutting.done(function(data) {
-        //     var cutEndTime = new Date();
-        //     alert("Successfully Cut Video.\r\n" + targetURL + "\r\nCutting Time: " + (cutEndTime-cutStartTime)/1000 + " seconds");
-        // });
 
         var wubData = {
             id:input.id,
