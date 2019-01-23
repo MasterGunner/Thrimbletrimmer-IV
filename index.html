@@ -83,10 +83,10 @@
                 <th></th>
             </tr>
             <tr>
-                <td><input id="WubloaderLocation" value="http://wubloader.codegunner.com" /></td>
-                <td><input id="StreamName" value="gamesdonequick" /></td>
-                <td><input id="StreamStart" value="2019-01-06T16:00:00" /></td>
-                <td><input id="StreamEnd" value="2019-01-06T17:00:00" /></td>
+                <td><input id="WubloaderLocation" value="https://test-wubloader.codegunner.com" /></td>
+                <td><input id="StreamName" value="seabats" /></td>
+                <td><input id="StreamStart" style="width:150px;" value="2019-01-06T16:00:00" /><input id="BusTimeStart" style="width:50px;" value="0:00" /></td>
+                <td><input id="StreamEnd" style="width:150px;" value="2019-01-06T17:00:00" /><input id="BusTimeEnd" style="width:50px;" value="1:00" /></td>
                 <td><input id="AllowHoles" type="checkbox" checked /></td>
                 <td><input id="IsExperimental" type="checkbox" checked /></td>
                 <td><input type="button" value="Load Playlist" onclick="loadPlaylist()" /></td>
@@ -146,17 +146,43 @@
         function loadPlaylist() {
             var playlist = document.getElementById("WubloaderLocation").value + "/playlist/" + document.getElementById("StreamName").value + ".m3u8"
 
-            var streamStart = document.getElementById("StreamStart").value ? "start="+document.getElementById("StreamStart").value:null;
-            var streamEnd = document.getElementById("StreamEnd").value ? "end="+document.getElementById("StreamEnd").value:null;
-            var queryString = (streamStart || streamEnd) ? "?" + [streamStart, streamEnd].filter((a) => !!a).join("&"):"";
+            //if BusTime is populated, set Time Fields to it first.
+            var busTimeStart = document.getElementById("BusTimeStart").value;
+            var busTimeEnd = document.getElementById("BusTimeEnd").value;
+            if(busTimeStart && busTimeEnd) {
+                //Fetch list of hours available for that stream, to get your "start" point.
+                fetch(document.getElementById("WubloaderLocation").value + "/files/" + document.getElementById("StreamName").value + "/source")
+                .then(data => data.json())
+                .then(function (data) {
+                    var streamStart = new Date(data.sort()[0] + ":00:00Z");
 
-            player.src(playlist + queryString);
+                    //Convert BusTime to milliseconds from start of stream
+                    busTimeStart = (parseInt(busTimeStart.split(':')[0]) + busTimeStart.split(':')[1]/60)  * 1000 * 60 * 60;
+                    busTimeEnd = (parseInt(busTimeEnd.split(':')[0]) + busTimeEnd.split(':')[1]/60)  * 1000 * 60 * 60;
+                    
+                    document.getElementById("StreamStart").value = new Date(streamStart.getTime() + busTimeStart).toISOString().substring(0,19);
+                    document.getElementById("StreamEnd").value = new Date(streamStart.getTime() + busTimeEnd).toISOString().substring(0,19);
+                    
+                    var streamStart = document.getElementById("StreamStart").value ? "start="+document.getElementById("StreamStart").value:null;
+                    var streamEnd = document.getElementById("StreamEnd").value ? "end="+document.getElementById("StreamEnd").value:null;
+                    var queryString = (streamStart || streamEnd) ? "?" + [streamStart, streamEnd].filter((a) => !!a).join("&"):"";
+
+                    player.src(playlist + queryString);
+                });
+            } else {
+                var streamStart = document.getElementById("StreamStart").value ? "start="+document.getElementById("StreamStart").value:null;
+                var streamEnd = document.getElementById("StreamEnd").value ? "end="+document.getElementById("StreamEnd").value:null;
+                var queryString = (streamStart || streamEnd) ? "?" + [streamStart, streamEnd].filter((a) => !!a).join("&"):"";
+
+                player.src(playlist + queryString);
+            }
         }
         function toggleHelp() {
             var helpPane = document.getElementById("HelpPane");
             helpPane.style.display = (helpPane.style.display === "none") ? "block":"none";
         }
-
+    </script>
+    <script>
         if(!!sessionStorage.length){
             document.getElementById("WubloaderLocation").value = sessionStorage.getItem('wubloaderURL');
             document.getElementById("StreamName").value = sessionStorage.getItem('streamName');
@@ -167,6 +193,7 @@
 
             loadPlaylist();
         } else {
+            //Set playlist start/end times to the last full hour.
             var startOfHour = new Date(new Date().setMinutes(0,0,0));
             
             document.getElementById("StreamStart").value = new Date(startOfHour.getTime() - 1000*60*60).toISOString().substring(0,19);

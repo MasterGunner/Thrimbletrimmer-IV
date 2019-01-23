@@ -1,0 +1,37 @@
+Final Icons
+Editor Timeline/Slider
+Proper dashboard page
+Bus Time to UTC conversion for selecting segments < done
+Authentication
+
+Progress Bar thumbnails:
+    https://www.npmjs.com/package/videojs-thumbnails
+    This one uses a "sprite" image that it steps through on a designated time interval.
+    ...That'd mean an image would have to be generated every time a playlist is requested - not what we want (so far we're avoiding temporary files floating around).
+    Also desync issues - though that'd probably be unnoticible.
+
+    Other option would be a captions track that can be generated on the fly alongside the playlist; each segment having its own thumbnail.
+    Create a plugin to use the caption track to get image locations for the progress bar.
+    Not sure if this will work with the move to nignx instead of the current Restreamer app.
+
+    Or, eschew the captions track, and generate thumbnails with images named according to segment, so I can just assume the names/source location.
+        ^ DO THIS
+
+    Regardless, to map thumbnails - which will be named/timed in UTC to video progress:
+        Pull all thumbnails, stick in an array.
+        thumbnailArray[(currentTime / duration * thumbnailArray.length).floor()];
+        Sure, possibility of desync, but so long as it's within a few seconds, it's good enough.
+
+Live Progress Bar:
+    https://github.com/videojs/videojs-contrib-hls/issues/826
+
+Possible use for captions track:
+    Take rows from the spreadsheet and serve them as a caption track to the player, which can display on the progress bar where they happen.
+    Or might be better to do this client side?
+        Depends on how we end up doing the database setup - if the Restreamer has access to a synced table of all events, sure.
+        Otherwise, no reason to make the Restreamer handle that load and make it more complex.
+
+Playlist request:
+    Load file list to get stream start time (well, hour)
+    Use that to automatically parse BusTime to UTC
+    ^Done.
