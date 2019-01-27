@@ -24,6 +24,9 @@ Progress Bar thumbnails:
 
 Live Progress Bar:
     https://github.com/videojs/videojs-contrib-hls/issues/826
+    ...oh https://blog.videojs.com/video-js-7-4/
+
+    Still not perfect for our use case, and need to get the trimming bar to work with it somehow.
 
 Possible use for captions track:
     Take rows from the spreadsheet and serve them as a caption track to the player, which can display on the progress bar where they happen.

@@ -16,6 +16,7 @@ function setupPlayer(source, startTrim, endTrim) {
     //Make poster of DB logo in correct aspect ratio, to control initial size of fluid container.
     var options = {
         sources: [{ src: source }],
+        liveui: true,
         //fluid:true,
         controls:true,
         autoplay:true,
