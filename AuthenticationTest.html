@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Thrimbletrimmer Goes Forth</title>
+    <meta name="description" content="">
+
+    <meta name="google-signin-client_id" content="345276493482-r84m2giavk10glnmqna0lbq8e1hdaus0.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js?onload=onGLoad" async defer></script>
+</head>
+<body>
+    <!-- https://developers.google.com/identity/sign-in/web/sign-in -->
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <a href="#" onclick="signOut();">Sign out</a>
+
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            console.log('ID Token: ' + googleUser.getAuthResponse().id_token);
+        }
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+            console.log('User signed out.');
+            });
+        }
+    </script>
+</body>
+</html>

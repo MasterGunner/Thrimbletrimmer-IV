@@ -1,0 +1,15 @@
+Editor
+    On Get
+
+    On Submit
+
+Dashboard 
+    Get All
+
+Admin Dashboard
+    Get All
+
+    Admin Update
+
+Generic
+    Authentication

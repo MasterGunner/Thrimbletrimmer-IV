@@ -1,44 +1,23 @@
-New Wubloader Integration
-Write better build script with GULP (including minifying and packaging the Public folder)
-Authentication & Session Management
-"Night Mode" and cookie to support it.
-
-"Queue" page to show videos currently awaiting edits (and who claimed them)
-Separate queue for RDPs.
-After video submission, redirect to queue page.
-
-J/K/L as keyboard shortcuts to move forward/back by 5 seconds, and pause.
-
-Resizable playback window/other solutions for extremely long videos.
-
-Make "title too long warning" have a non-white background (eeeeh - but will work on visibility)
-
-
-Video Player itself:
-hls.js or video.js libraries to display Ekim's video stream.
-    https://www.npmjs.com/package/videojs-abloop
-    https://github.com/videojs/http-streaming
-    
-Use the Azure Media Player instead of my hacked-together one?
-    https://ampdemo.azureedge.net/azuremediaplayer.html
-    Other samples: https://amp.azure.net/libs/amp/latest/docs/samples.html
-    Plugins include things like thumbnails while seeking: https://amp.azure.net/libs/amp/latest/docs/PLUGINS.html
-    So if this will work with Ekim's HLS stream, I'd want to create a plugin for my trim bar.
-    Note their are different skins available, which change the controls layout - the "Sprite Tip" plugin demo looks to have the look I want.
-    Oooh, Timeline Markers plugin could be handy for the trim bar.
-    Or, use them to mark elements from the spreadsheet.
-
-    ->Looks like this may only work with an Azure backend, at least without some hacking... and is probably built around video.js anyways.
-        Well, it can do local .mp4 files.
-    
-    ...https://azuremediaclipper.azurewebsites.net/
-
-TODO:
-    Backend
-    Trim Seek Bar/Slider
-    Authentication
-	
-	
 <SafeBot> MasterGunner: as noted in the readme, they expect the base directory (containing CHANNEL/QUALITY/HOUR/FILE.ts segments) mounted at /mnt, which you'd generally run like this: docker run -v /path/to/that/directory:/mnt IMAGE < From ekimekim on Mon, 31 Dec 2018 05:37:51 UTC (11 hours 56 minutes ago)
 <SafeBot> MasterGunner: you'd then need to find the ip of that docker image (google it), then you can hit the http api at <that ip>:8000 < From ekimekim on Mon, 31 Dec 2018 05:38:49 UTC (11 hours 55 minutes ago)
 <SafeBot> MasterGunner: for the downloader, it also expects the channel name as an arg, so you'd run it like this: docker run -v /path/to/base/dir:/mnt IMAGE CHANNEL < From ekimekim on Mon, 31 Dec 2018 05:40:09 UTC (11 hours 54 minutes ago)
+
+Authentication
+    Only really matters on POST
+    Want roles for admin, editors, and viewers.
+
+Editor - Thumbnails while seeking.
+    Low priority.
+
+Editor - Thrim-Shim
+    Make current header only available on debug/advanced mode.
+    New header just displays bus-time and "Load" button.
+    Querystring holds ID, used to call Thrim-Shim/Database.
+        Config file sets Thrim-Shim URL?
+    
+Admin Dashboard
+    New page that dumps the "Events" table of the database (via Thrim-Shim).
+    Sheet input fields are read-only. Thrimbletrimmer & Wubloader columns (such as Status field) can be manually set.
+
+Viewer Page
+    Just plays back the video for the selected time range (or live).

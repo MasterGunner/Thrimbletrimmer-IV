@@ -1,25 +1,14 @@
-// var input = {
-//     id: '2549',
-//     start: 10,
-//     end: 591.926213,
-//     title: 'Desert Bus Clip',
-//     description: 'A clip from Desert Bus.',
-//     source: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8'
-// }
-
 var player = null;
-setupPlayer(input.source, input.start, input.end);
-document.getElementById("VideoTitle").value = input.title;
-document.getElementById("VideoDescription").value = input.description;
 
 function setupPlayer(source, startTrim, endTrim) {
+    document.getElementById("my-player").style.display = "";
     //Make poster of DB logo in correct aspect ratio, to control initial size of fluid container.
     var options = {
         sources: [{ src: source }],
         liveui: true,
         //fluid:true,
         controls:true,
-        autoplay:true,
+        autoplay:false,
         width:1280,
         height:420,
         playbackRates: [0.5, 1, 1.25, 1.5, 2],
@@ -31,6 +20,14 @@ function setupPlayer(source, startTrim, endTrim) {
             }
         }
     };
+    if(player) { //Destroy and recreate the player if it already exists.
+        player.dispose(); 
+        document.getElementById("EditorContainer").innerHTML = `
+            <video id="my-player" class="video-js" controls preload="auto">
+                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+            </video>
+        `;
+    } 
     player = videojs('my-player', options, function onPlayerReady() {
         videojs.log('Your player is ready!');
 
@@ -42,60 +39,23 @@ function setupPlayer(source, startTrim, endTrim) {
         this.vhs.playlists.on('loadedmetadata', function() {
             // setTimeout(function() { player.play(); }, 1000);
             player.hasStarted(true); //So it displays all the controls.
+            var trimmingControls = player.trimmingControls({ startTrim:(startTrim ? startTrim:0), endTrim:(endTrim ? endTrim:player.duration()) });
         });
 
         // How about an event listener?
         this.on('ended', function() {
             videojs.log('Awww...over so soon?!');
         });
+
+        this.on('error', function() {
+            videojs.log("Could not load video stream");
+            alert("No video available for stream.");
+            document.getElementById("my-player").style.display = "none";
+        })
     });
     var hlsQS = player.hlsQualitySelector();
-    var trimmingControls = player.trimmingControls({ startTrim:startTrim, endTrim:endTrim });
+    //var trimmingControls = player.trimmingControls({ startTrim:(startTrim ? startTrim:0), endTrim:(endTrim ? endTrim:player.duration()) });
 }
-
-thrimbletrimmerSubmit = function() {
-    document.getElementById('SubmitButton').disabled = true;
-    if(player.trimmingControls().options.startTrim >= player.trimmingControls().options.endTrim) {
-        alert("End Time must be greater than Start Time");
-        document.getElementById('SubmitButton').disabled = false;
-    } else {
-        var discontinuities = mapDiscontinuities();
-        // var targetURL = document.getElementById("WubloaderLocation").value + 
-        //     "/cut/" + document.getElementById("StreamName").value + 
-        //     "/source.ts?start=" + wubData.start.replace('Z','') + 
-        //     "&end=" + wubData.end.replace('Z','') + 
-        //     "&allow_holes=" + String(document.getElementById('AllowHoles').checked) +
-        //     "&experimental=" + String(document.getElementById('IsExperimental').checked);
-        // console.log(targetURL);
-        // document.getElementById('outputFile').src = targetURL;
-
-        var wubData = {
-            id:input.id,
-            start:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.startTrim),
-            end:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.endTrim),
-            title:document.getElementById("VideoTitle").value,
-            description:document.getElementById("VideoDescription").value,
-            submittedTimestamp:(new Date()).toISOString()
-        };
-        wubData.cutURL = document.getElementById("WubloaderLocation").value + 
-            "/cut/" + document.getElementById("StreamName").value + 
-            "/source.ts?start=" + wubData.start.replace('Z','') + 
-            "&end=" + wubData.end.replace('Z','') + 
-            "&allow_holes=" + String(document.getElementById('AllowHoles').checked) +
-            "&experimental=" + String(document.getElementById('IsExperimental').checked);
-        console.log(wubData);
-        db.collection("Wubloader-Queue").add(wubData)
-        .then(function(docRef) {
-            alert('Successfully submitted video.\r\n' + wubData.cutURL);
-            console.log("Document written with ID: ", docRef.id);
-        })
-        .catch(function(error) {
-            alert('Failed to submit video.');
-            console.error("Error adding document: ", error);
-            document.getElementById('SubmitButton').disabled = false;
-        });
-    }
-};
 
 mapDiscontinuities = function() {
     var playlist = player.vhs.playlists.master.playlists.filter(playlist => playlist.attributes.VIDEO === "source")[0]; //Make sure to grab the source playlists, non-source appears to lack the discontinuity and stream start objects.
