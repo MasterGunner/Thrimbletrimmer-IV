@@ -83,6 +83,18 @@ else if (mode == 1) {
 
                 setupPlayer(playlist + queryString);
             }
+
+            document.getElementById('qualityLevel').innerHTML = "";
+            fetch(document.getElementById('WubloaderLocation').value + '/files/' + document.getElementById('StreamName').value).then(data => data.json()).then(function (data) {
+                if (!data.length) {
+                    console.log("Could not retrieve quality levels");
+                    return;
+                }
+                var qualityLevels = data.sort().reverse();
+                qualityLevels.forEach(function(level, index) {
+                    document.getElementById('qualityLevel').innerHTML += '<option value="'+level+'" '+(index==0 ? 'selected':'')+'>'+level+'</option>';
+                })
+            });
     };
 
     thrimbletrimmerSubmit = function() {
@@ -94,7 +106,7 @@ else if (mode == 1) {
             var discontinuities = mapDiscontinuities();
 
             var wubData = {
-                id:input.id,
+                id:0,
                 start:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.startTrim),
                 end:getRealTimeForPlayerTime(discontinuities, player.trimmingControls().options.endTrim),
                 title:document.getElementById("VideoTitle").value,
@@ -105,7 +117,8 @@ else if (mode == 1) {
 
             var targetURL = document.getElementById("WubloaderLocation").value + 
                 "/cut/" + document.getElementById("StreamName").value + 
-                "/source.ts?start=" + wubData.start.replace('Z','') + 
+                "/"+document.getElementById('qualityLevel').options[document.getElementById('qualityLevel').options.selectedIndex].value+".ts" +
+                "?start=" + wubData.start.replace('Z','') + 
                 "&end=" + wubData.end.replace('Z','') + 
                 "&allow_holes=" + String(document.getElementById('AllowHoles').checked) +
                 "&experimental=" + String(document.getElementById('IsExperimental').checked);
@@ -117,16 +130,9 @@ else if (mode == 1) {
 } 
 else if (mode == 2) {
     var thrimshimLocation = document.getElementById("WubloaderLocation").value + "/thrimshim/";
-    var desertBusStart = new Date("2019-06-13T00:00:00Z");
-    var desertBusChannel = "loadingreadyrun";
+    var desertBusStart = new Date("2019-06-21T16:30:00Z");
+    var desertBusChannel = "gamesdonequick";
     document.getElementById("StreamName").value = desertBusChannel;
-
-    var testThrimShim = {
-        id: '2549',
-        event_start: "2019-06-13T01:00:40.381",
-        event_end: "2019-06-13T01:10:48.381",
-        description: 'Toilet flush',
-    }
 
     pageSetup = function() {
         document.getElementById("wubloaderInputTable").style.display = "";
@@ -134,7 +140,7 @@ else if (mode == 2) {
         //Get values from ThrimShim
         var rowId = /id=(.*)(?:&|$)/.exec(document.location.search)[1];
         fetch(thrimshimLocation+rowId).then(data => data.json()).then(function (data) {
-            if (!data.length) {
+            if (!data) {
                 alert("No video available for stream.");
                 return;
             }
@@ -176,6 +182,18 @@ else if (mode == 2) {
             var queryString = (streamStart || streamEnd) ? "?" + [streamStart, streamEnd].filter((a) => !!a).join("&"):"";
             setupPlayer(playlist + queryString);
         }
+
+        document.getElementById('qualityLevel').innerHTML = "";
+        fetch(document.getElementById('WubloaderLocation').value + '/files/' + document.getElementById('StreamName').value).then(data => data.json()).then(function (data) {
+            if (!data.length) {
+                console.log("Could not retrieve quality levels");
+                return;
+            }
+            var qualityLevels = data.sort().reverse();
+            qualityLevels.forEach(function(level, index) {
+                document.getElementById('qualityLevel').innerHTML += '<option value="'+level+'" '+(index==0 ? 'selected':'')+'>'+level+'</option>';
+            })
+        });
     };
 
     thrimbletrimmerSubmit = function() {
@@ -193,10 +211,11 @@ else if (mode == 2) {
                 video_description:document.getElementById("VideoDescription").value,
                 allow_holes:String(document.getElementById('AllowHoles').checked),
                 experimental:String(document.getElementById('IsExperimental').checked),
-                upload_location:'',
-                video_channel:'',
-                video_quality:'',
-                uploader_whitelist:''
+                upload_location:document.getElementById('uploadLocation').value,
+                video_channel:document.getElementById("StreamName").value,
+                video_quality:document.getElementById('qualityLevel').options[document.getElementById('qualityLevel').options.selectedIndex].value,
+                uploader_whitelist:(document.getElementById('uploaderWhitelist').value ? document.getElementById('uploaderWhitelist').value.split(','):null),
+                state:"EDITED"
             };
             // state_columns = ['state', 'uploader', 'error', 'video_link'] 
             console.log(wubData);

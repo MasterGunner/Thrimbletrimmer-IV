@@ -58,7 +58,7 @@ function setupPlayer(source, startTrim, endTrim) {
 }
 
 mapDiscontinuities = function() {
-    var playlist = player.vhs.playlists.master.playlists.filter(playlist => playlist.attributes.VIDEO === "source")[0]; //Make sure to grab the source playlists, non-source appears to lack the discontinuity and stream start objects.
+    var playlist = player.vhs.playlists.master.playlists.filter(playlist => typeof playlist.discontinuityStarts !== "undefined")[0]; //Only one of the playlists will have the discontinuity or stream start objects, and it's not necessarily the first one or the source one.
     var discontinuities = playlist.discontinuityStarts.map(segmentIndex => { return {segmentIndex:segmentIndex, segmentTimestamp:playlist.segments[segmentIndex].dateTimeObject, playbackIndex:null}; });
     //var lastDiscontinuity = Math.max(...playlist.discontinuityStarts);
     var lastDiscontinuity = playlist.discontinuityStarts.slice(-1).pop(); //Assumes discontinuities are sorted in ascending order.
@@ -76,7 +76,7 @@ mapDiscontinuities = function() {
 };
 
 getRealTimeForPlayerTime = function(discontinuities, playbackIndex) {
-    var streamStart = player.vhs.playlists.master.playlists.filter(playlist => playlist.attributes.VIDEO === "source")[0].dateTimeObject; //Make sure to grab the source playlists, non-source appears to lack the discontinuity and stream start objects.
+    var streamStart = player.vhs.playlists.master.playlists.filter(playlist => typeof playlist.dateTimeObject !== "undefined")[0].dateTimeObject; //Only one of the playlists will have the discontinuity or stream start objects, and it's not necessarily the first one or the source one.
     
     //Find last discontinuity before playbackIndex
     var lastDiscontinuity = discontinuities.filter(discontinuity => discontinuity.playbackIndex < playbackIndex).slice(-1).pop();

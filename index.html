@@ -68,7 +68,7 @@
                 <th></th>
             </tr>
             <tr>
-                <td><input id="WubloaderLocation" value="https://test-wubloader.codegunner.com" /></td>
+                <td><input id="WubloaderLocation" value="https://secure-wubloader.codegunner.com" /></td>
                 <td><input id="StreamName" value="seabats" /></td>
                 <td><input id="StreamStart" style="display:none;" class="UTCTimeInput" value="" /><input id="BusTimeStart" class="BusTimeInput" value="0:00" /></td>
                 <td><input id="StreamEnd" style="display:none;" class="UTCTimeInput" value="" /><input id="BusTimeEnd" class="BusTimeInput" value="1:00" /></td>
@@ -88,6 +88,17 @@
                 <td></td>
                 <td></td>
             </tr>
+            <tr>
+                <td>Advanced Options:</td>
+                <td><select id="qualityLevel"></select></td>
+                <td><select id="uploadLocation"><option value="YouTube" selected>YouTube</option></select></td>
+                <td><input id="uploaderWhitelist" title="Uploader Whitelist" /></td>
+            </tr>
+            <tr>
+                <td>ThrimShim ID:</td>
+                <td><input id="hiddenSubmissionID" value="" /></td>
+                <td><input type="button" value="Load Event" onclick="window.location.search = '?id='+document.getElementById('hiddenSubmissionID').value"/></td>
+            </tr>
         </table>
 
         <div id="EditorContainer">
@@ -106,7 +117,6 @@
                 <textarea id="VideoDescription" ></textarea>
             </div>
             <input type="button" id="SubmitButton" value="Submit" onclick="thrimbletrimmerSubmit()"/>
-            <input id="hiddenSubmissionID" style="display:none;" value="" />
             <a href="/dashboard.html">Go To Dashboard</a>
             <a id="HelpButton" style="float:right;" href="JavaScript:toggleHelp();">Help</a>
         </div>
