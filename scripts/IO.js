@@ -215,7 +215,8 @@ else if (mode == 2) {
                 video_channel:document.getElementById("StreamName").value,
                 video_quality:document.getElementById('qualityLevel').options[document.getElementById('qualityLevel').options.selectedIndex].value,
                 uploader_whitelist:(document.getElementById('uploaderWhitelist').value ? document.getElementById('uploaderWhitelist').value.split(','):null),
-                state:"EDITED"
+                state:"EDITED",
+                Auth_Token: "testToken"
             };
             // state_columns = ['state', 'uploader', 'error', 'video_link'] 
             console.log(wubData);
