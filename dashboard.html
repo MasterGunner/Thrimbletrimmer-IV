@@ -10,25 +10,6 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="  crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
-    <script>
-        firebase.initializeApp({
-            apiKey: 'AIzaSyD8mDO_Cs0GZ-0MT3AQbvAVWxU17hNg50g',
-            authDomain: 'thrimbletrimmer.firebaseapp.com',
-            projectId: 'thrimbletrimmer'
-        });
-
-        // Initialize Cloud Firestore through Firebase
-        var db = firebase.firestore();
-
-        // Disable deprecated features
-        db.settings({
-            timestampsInSnapshots: true
-        });
-    </script>
-
     <style>
         html, body {
             height:100%;
@@ -66,7 +47,7 @@
 </head>
 <body>
     <div>
-        <div class="sectionContainer">
+        <div class="sectionContainer" style="display:none;">
             <table>
                 <tr>
                     <th>Wubloader URL</th>
@@ -78,7 +59,7 @@
                     <th></th>
                 </tr>
                 <tr>
-                    <td><input id="WubloaderLocation" value="https://wubloader.codegunner.com" /></td>
+                    <td><input id="WubloaderLocation" value="http://charm.wubs.stream:20088" /></td>
                     <td><input id="StreamName" value="gamesdonequick" /></td>
                     <td><input id="StreamStart" value="2019-01-06T16:00:00" /></td>
                     <td><input id="StreamEnd" value="2019-01-06T17:00:00" /></td>
@@ -102,13 +83,14 @@
             <h1 style="color:#1976d2;font-size:34px;line-height:38px;">Wubloader Queue</h1>
             <table id="QueueTable">
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
+                    <th>Start Time/th>
+                    <th>End Time</th>
+                    <th>Event Type</th>
                     <th>Description</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Cut URL</th>
-                    <th>Submitted</th>
+                    <th>State</th>
+                    <th>Edit</th>
+                    <th>Manual Link</th>
+                    <th>Reset</th>
                 </tr>
             </table>
         </div>
@@ -118,32 +100,23 @@
         document.getElementById("StreamStart").value = new Date(startOfHour.getTime() - 1000*60*60).toISOString().substring(0,19);
         document.getElementById("StreamEnd").value = startOfHour.toISOString().substring(0,19);
 
-        db.collection("Wubloader-Queue").orderBy("submittedTimestamp").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
+        var thrimshimLocation = "http://charm.wubs.stream:20088/thrimshim/";
+        fetch(thrimshimLocation).then(data => data.json()).then(function (data) {
+            data.forEach((event) => {
                 var row = document.createElement("TR");
                 row.innerHTML = `
-                    <td>${doc.data().id}</td>
-                    <td>${doc.data().title}</td>
-                    <td>${doc.data().description}</td>
-                    <td>${doc.data().start}</td>
-                    <td>${doc.data().end}</td>
-                    <td><a href="${doc.data().cutURL}">Download</a></td>
-                    <td>${doc.data().submittedTimestamp}</td>
+                    <td>${event.event_start}</td>
+                    <td>${event.event_end}</td>
+                    <td>${event.category}</td>
+                    <td>${event.description}</td>
+                    <td>${event.state}</td>
+                    <td><a href="/?id=${event.id}">Edit</a></td>
+                    <td><a href="#">Reset</a></td>
+                    <td><a href="#">Manual Link</a></td>
                 `;
                 document.getElementById('QueueTable').appendChild(row);
             });
         });
-
-        function loadPlaylist() {
-            sessionStorage.setItem('wubloaderURL', document.getElementById("WubloaderLocation").value);
-            sessionStorage.setItem('streamName', document.getElementById("StreamName").value);
-            sessionStorage.setItem('streamStart', document.getElementById("StreamStart").value);
-            sessionStorage.setItem('streamEnd', document.getElementById("StreamEnd").value);
-            sessionStorage.setItem('allowHoles', document.getElementById('AllowHoles').checked);
-            sessionStorage.setItem('isExperimental', document.getElementById('IsExperimental').checked);
-
-            window.document.location.href = "/";
-        }
     </script>
 </body>
 </html>
