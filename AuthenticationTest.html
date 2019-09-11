@@ -16,7 +16,9 @@
     <a href="#" onclick="signOut();">Sign out</a>
 
     <script>
+        var user;
         function onSignIn(googleUser) {
+            user = googleUser;
             var profile = googleUser.getBasicProfile();
             console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
             console.log('Name: ' + profile.getName());
@@ -25,9 +27,41 @@
             console.log('ID Token: ' + googleUser.getAuthResponse().id_token);
         }
         function signOut() {
+            user = null;
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
             console.log('User signed out.');
+            });
+        }
+    </script>
+    <div>
+        <input type="button" onclick="testSubmit()" value="Test Auth" />
+    </div>
+    <script>
+        function testSubmit() {
+            fetch("http://192.168.225.10/thrimshim/auth-test", { // {mode: 'cors'} ???
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    test: "123 Hello World?",
+                    token: user.getAuthResponse().id_token
+                })
+            }).then(function(response) {
+                if (response.status !== 200) {
+                    console.log('Looks like there was a problem. Status Code: ' + response.status);
+                    return;
+                }
+
+                // Examine the text in the response
+                response.json().then(function(data) {
+                    console.log(data);
+                });
+            }).catch(function(err) {
+                console.log('Fetch Error :-S', err);
             });
         }
     </script>

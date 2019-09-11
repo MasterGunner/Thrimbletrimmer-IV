@@ -7,7 +7,7 @@ pageSetup = function() {
     //Get values from ThrimShim
     if(/id=/.test(document.location.search)) {
         var rowId = /id=(.*)(?:&|$)/.exec(document.location.search)[1];
-        fetch(thrimshimLocation+rowId).then(data => data.json()).then(function (data) {
+        fetch(thrimshimLocation+rowId).then(data => data.json()).then(function (data) { // {mode: 'cors'} ???
             if (!data) {
                 alert("No video available for stream.");
                 return;
@@ -58,7 +58,7 @@ loadPlaylist = function() {
 
     //Get quality levels for advanced properties.
     document.getElementById('qualityLevel').innerHTML = "";
-    fetch(document.getElementById('WubloaderLocation').value + '/files/' + document.getElementById('StreamName').value).then(data => data.json()).then(function (data) {
+    fetch(document.getElementById('WubloaderLocation').value + '/files/' + document.getElementById('StreamName').value).then(data => data.json()).then(function (data) { // {mode: 'cors'} ???
         if (!data.length) {
             console.log("Could not retrieve quality levels");
             return;
@@ -96,7 +96,7 @@ thrimbletrimmerSubmit = function() {
 
         //Submit to thrimshim
         var rowId = /id=(.*)(?:&|$)/.exec(document.location.search)[1];
-        fetch(thrimshimLocation+rowId, {
+        fetch(thrimshimLocation+rowId, { // {mode: 'cors'} ???
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
