@@ -35,11 +35,12 @@
         }
     </script>
     <div>
-        <input type="button" onclick="testSubmit()" value="Test Auth" />
+        <input type="button" onclick="testAuth()" value="Test Auth" />
+        <input type="button" onclick="testSubmit()" value="Test Submit" />
     </div>
     <script>
-        function testSubmit() {
-            fetch("http://192.168.225.10/thrimshim/auth-test", { // {mode: 'cors'} ???
+        function testAuth() {
+            fetch("http://172.17.68.117/thrimshim/auth-test", { // {mode: 'cors'} ???
                 method: 'POST',
                 mode: 'cors',
                 headers: {
@@ -63,6 +64,34 @@
             }).catch(function(err) {
                 console.log('Fetch Error :-S', err);
             });
+        }
+
+        function testSubmit() {
+            var wubData = {
+                allow_holes: "true",
+                experimental: "true",
+                state: "EDITED",
+                token: user.getAuthResponse().id_token,
+                upload_location: "YouTube",
+                uploader_whitelist: null,
+                video_channel: "rpglimitbreak",
+                video_description: "Test Description",
+                video_end: "2019-09-14T03:54:28.546",
+                video_quality: "source",
+                video_start: "2019-09-14T03:48:06.546",
+                video_title: "Test"
+            }
+
+            //Submit to thrimshim
+            fetch("http://172.17.68.117/thrimshim/04860aa4-d6a5-11e9-9d36-2a2ae2dbcce4", { // {mode: 'cors'} ???
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(wubData)
+            }).then(data => console.log(data));
+            
         }
     </script>
 </body>

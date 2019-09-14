@@ -7,6 +7,7 @@
     <title>Thrimbletrimmer Goes Forth</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="345276493482-r84m2giavk10glnmqna0lbq8e1hdaus0.apps.googleusercontent.com">
 
     <link href="/plugins/video.js/dist/video-js.min.css" rel="stylesheet">
     <link href="/plugins/videojs-hls-quality-selector/dist/videojs-hls-quality-selector.css" rel="stylesheet">
@@ -17,6 +18,8 @@
     <script src="/plugins/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js"></script>
     <script src="/plugins/videojs-hls-quality-selector/dist/videojs-hls-quality-selector.min.js"></script>
     <script src="/videojs-trimming-controls/dist/videojs-trimming-controls.js"></script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onGLoad" async defer></script>
 
     <link href="/styles/style.css" rel="stylesheet">
 </head>
@@ -33,8 +36,8 @@
                 <th></th>
             </tr>
             <tr>
-                <td><input id="WubloaderLocation" value="https://secure-wubloader.codegunner.com" /></td>
-                <td><input id="StreamName" value="seabats" /></td>
+                <td><input id="WubloaderLocation" value="http://172.17.68.117" /></td>
+                <td><input id="StreamName" value="rpglimitbreak" /></td>
                 <td><input id="StreamStart" style="display:none;" class="UTCTimeInput" value="" /><input id="BusTimeStart" class="BusTimeInput" value="0:00" /></td>
                 <td><input id="StreamEnd" style="display:none;" class="UTCTimeInput" value="" /><input id="BusTimeEnd" class="BusTimeInput" value="1:00" /></td>
                 <td><input id="AllowHoles" type="checkbox" checked /></td>
@@ -120,5 +123,27 @@
             }
         }
     </script>
+
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+<a href="#" onclick="signOut();">Sign out</a>
+<script>
+    var user;
+    function onSignIn(googleUser) {
+        user = googleUser;
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        console.log('ID Token: ' + googleUser.getAuthResponse().id_token);
+    }
+    function signOut() {
+        user = null;
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+        console.log('User signed out.');
+        });
+    }
+</script>
 </body>
 </html>

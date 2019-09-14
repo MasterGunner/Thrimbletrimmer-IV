@@ -1,7 +1,7 @@
 var thrimshimLocation = document.getElementById("WubloaderLocation").value + "/thrimshim/";
-var desertBusStart = new Date("2019-06-21T16:30:00Z");
-var desertBusChannel = "gamesdonequick";
-document.getElementById("StreamName").value = desertBusChannel;
+var desertBusStart = new Date("1970-01-01T00:00:00Z");
+//var desertBusChannel = "gamesdonequick";
+//document.getElementById("StreamName").value = desertBusChannel;
 
 pageSetup = function() {
     //Get values from ThrimShim
@@ -89,10 +89,12 @@ thrimbletrimmerSubmit = function() {
             video_channel:document.getElementById("StreamName").value,
             video_quality:document.getElementById('qualityLevel').options[document.getElementById('qualityLevel').options.selectedIndex].value,
             uploader_whitelist:(document.getElementById('uploaderWhitelist').value ? document.getElementById('uploaderWhitelist').value.split(','):null),
-            state:"EDITED"
+            state:"EDITED",
+            token: user.getAuthResponse().id_token
         };
         // state_columns = ['state', 'uploader', 'error', 'video_link'] 
         console.log(wubData);
+        console.log(JSON.stringify(wubData));
 
         //Submit to thrimshim
         var rowId = /id=(.*)(?:&|$)/.exec(document.location.search)[1];
