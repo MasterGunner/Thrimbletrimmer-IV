@@ -35,14 +35,33 @@
         }
     </script>
     <div>
-        <input type="button" onclick="testAuth()" value="Test Auth" />
-        <input type="button" onclick="testSubmit()" value="Test Submit" />
+        <br/>
+        <input id="server" value="http://172.17.68.117" />
+        <input id="rowId" value="04860aa4-d6a5-11e9-9d36-2a2ae2dbcce4" />
+        <input type="button" onclick="getRow()" value="Get Row"/>
+        <a href="http://172.17.68.117/thrimshim">All Rows</a>
+        <br/>
+        <textarea id="rowdump"></textarea>
+    </div>
+    <div>
+        <br/>
+        <input type="button" onclick="testAuth()" value="Test Auth" /><br />
+        <input type="button" onclick="testSubmit()" value="Test Submit" /><br />
+        <input type="button" onclick="testManualLink()" value="Test Manual Link" /><input id="manualLink" value="google.ca"/><br />
+        <input type="button" onclick="testReset()" value="Test Reset" /><br />
     </div>
     <script>
+        function getRow() {
+            fetch(document.getElementById("server").value+"/thrimshim/"+document.getElementById("rowId").value).then(function (response) {
+                response.text().then(function(data) {
+                    document.getElementById("rowdump").value=data;
+                });
+            });
+        }
+
         function testAuth() {
-            fetch("http://172.17.68.117/thrimshim/auth-test", { // {mode: 'cors'} ???
+            fetch(document.getElementById("server").value+"/thrimshim/auth-test", {
                 method: 'POST',
-                mode: 'cors',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -83,7 +102,7 @@
             }
 
             //Submit to thrimshim
-            fetch("http://172.17.68.117/thrimshim/04860aa4-d6a5-11e9-9d36-2a2ae2dbcce4", { // {mode: 'cors'} ???
+            fetch(document.getElementById("server").value+"/thrimshim/"+document.getElementById("rowId").value, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -92,6 +111,23 @@
                 body: JSON.stringify(wubData)
             }).then(data => console.log(data));
             
+        }
+
+        function testManualLink() {
+            fetch(document.getElementById("server").value+"/thrimshim/manual-link/"+document.getElementById("rowId").value, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(document.getElementById("manualLink").value)
+            }).then(data => console.log(data));
+        }
+
+        function testReset() {
+            fetch(document.getElementById("server").value+"/thrimshim/reset/"+document.getElementById("rowId").value, {
+                method: 'POST'
+            }).then(data => console.log(data));
         }
     </script>
 </body>
